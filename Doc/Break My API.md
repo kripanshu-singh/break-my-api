@@ -31,7 +31,6 @@ A Google intern wants to test the API they just built before their code review. 
 ---
 
 ## Phase-by-Phase Build Roadmap
-![[Pasted image 20260409184116.png]]
 
 ## The Content Strategy Running In Parallel
 
