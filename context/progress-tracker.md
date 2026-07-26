@@ -53,3 +53,11 @@ Establish database schema, JPA entities, and repository layer. Then build REST c
 - Switched from Express/Node to Spring Boot/Java on user request for resume value
 - Docker Compose chosen over native installs for Postgres/Redis/RabbitMQ — zero machine pollution
 - OpenAI SDK chosen over custom provider adapter — model-swappable via baseURL out of the box
+
+## 2026-07-26 — DTO layer created
+
+- Created `ApiResponse<T>` generic response wrapper record (data, error, meta) with static `success()` and `error()` factory methods
+- Created `CreateProjectRequest` record with Jakarta `@NotBlank` validation on name, description, baseUrl; optional version
+- Created `UpdateProjectRequest` record with all optional fields for partial updates
+- Created `ProjectResponse` record exposing id, name, description, baseUrl, version, createdAt, updatedAt
+- Project compiles successfully
