@@ -4,7 +4,7 @@ Update this file after every meaningful implementation change.
 
 ## Current Phase
 
-Phase 1 — Entity and Repository Layer (In progress)
+Phase 1 — Entity and Repository Layer (Complete)
 
 ## Current Goal
 
@@ -18,8 +18,8 @@ Establish database schema, JPA entities, and repository layer. Then build REST c
 - Skills installed: shadcn/ui, Next.js App Router, TypeScript advanced types, Tailwind
 - pom.xml fixed (Spring Boot 3.4.4, Java 21, all starters added)
 - Project compiles successfully (`./mvnw compile`)
-- Entities created: Project, Endpoint, Baseline, TestSuite
-- Repositories created: ProjectRepository, EndpointRepository, BaselineRepository, TestSuiteRepository
+- Entities created: Project, Endpoint, Baseline, TestSuite, TestRun, TestResult
+- Repositories created: ProjectRepository, EndpointRepository, BaselineRepository, TestSuiteRepository, TestRunRepository, TestResultRepository
 
 ## In Progress
 
@@ -28,11 +28,9 @@ Establish database schema, JPA entities, and repository layer. Then build REST c
 ## Next Up
 
 1. Add health check endpoint (`GET /api/health`)
-2. Create remaining entities: Run, TestCase, TestResult, Finding
-3. Create remaining repositories
-4. Configure RabbitMQ queue and `@Async` worker skeleton
-5. Add Redis rate limiter filter
-6. Create REST controller stubs (POST /api/test, GET /api/report/:id, GET /api/test/:runId/status)
+2. Configure RabbitMQ queue and `@Async` worker skeleton
+3. Add Redis rate limiter filter
+4. Create REST controller stubs
 
 ## Open Questions
 
