@@ -4,11 +4,11 @@ Update this file after every meaningful implementation change.
 
 ## Current Phase
 
-Phase 0 — Foundation and Guardrails (In progress)
+Phase 1 — Entity and Repository Layer (In progress)
 
 ## Current Goal
 
-Set up Spring Boot backend skeleton with Docker Compose infra (PostgreSQL + Redis + RabbitMQ), fix pom.xml dependencies, and establish database connectivity.
+Establish database schema, JPA entities, and repository layer. Then build REST controllers and service layer.
 
 ## Completed
 
@@ -16,20 +16,23 @@ Set up Spring Boot backend skeleton with Docker Compose infra (PostgreSQL + Redi
 - application.properties configured for Docker services
 - Context files updated for Spring Boot architecture
 - Skills installed: shadcn/ui, Next.js App Router, TypeScript advanced types, Tailwind
+- pom.xml fixed (Spring Boot 3.4.4, Java 21, all starters added)
+- Project compiles successfully (`./mvnw compile`)
+- Entities created: Project, Endpoint, Baseline, TestSuite
+- Repositories created: ProjectRepository, EndpointRepository, BaselineRepository, TestSuiteRepository
 
 ## In Progress
 
-- Fixing pom.xml: Spring Boot version 4.1.0 → 3.4.4, fixing starter artifact names, adding PostgreSQL driver, setting Java 21
+- None — waiting on next tasks
 
 ## Next Up
 
-1. Verify `docker compose up -d` starts all services cleanly
-2. Verify `./mvnw spring-boot:run` compiles and connects to PostgreSQL
-3. Add health check endpoint (`GET /api/health`)
+1. Add health check endpoint (`GET /api/health`)
+2. Create remaining entities: Run, TestCase, TestResult, Finding
+3. Create remaining repositories
 4. Configure RabbitMQ queue and `@Async` worker skeleton
 5. Add Redis rate limiter filter
-6. Create JPA entities for runs, test_cases, test_results, findings
-7. Create REST controller stubs (POST /api/test, GET /api/report/:id, GET /api/test/:runId/status)
+6. Create REST controller stubs (POST /api/test, GET /api/report/:id, GET /api/test/:runId/status)
 
 ## Open Questions
 
