@@ -14,8 +14,8 @@ BreakMyAPI is an AI-powered adversarial API tester that finds crashes, logic fai
 
 1. User lands on the Next.js frontend and chooses input mode (single endpoint or Swagger upload)
 2. User provides endpoint URL, HTTP method, sample body, and optional auth headers
-3. Backend validates input, calls AI to generate 20 adversarial payloads (with expected status codes and behavior descriptions), creates a `run` record in PostgreSQL, and enqueues a BullMQ job
-4. Worker picks up the job, fires all payloads concurrently with bounded parallelism, streams incremental results via WebSocket to the live dashboard
+3. Spring Boot backend validates input, calls AI via OpenAI SDK to generate 20 adversarial payloads (with expected status codes and behavior descriptions), creates a `run` record in PostgreSQL, and enqueues a RabbitMQ job
+4. Spring `@Async` worker picks up the job, fires all payloads concurrently with bounded parallelism, streams incremental results via WebSocket (STOMP) to the live dashboard
 5. For suspicious responses (especially 200s), a second AI call judges semantic correctness — flagging status mismatches, null bodies, data leaks, and latency anomalies
 6. Aggregated findings are persisted and exposed via a shareable read-only report page
 

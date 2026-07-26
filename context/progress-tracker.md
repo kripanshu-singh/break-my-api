@@ -4,46 +4,51 @@ Update this file after every meaningful implementation change.
 
 ## Current Phase
 
-Phase 0 — Foundation and Guardrails (Not started)
+Phase 0 — Foundation and Guardrails (In progress)
 
 ## Current Goal
 
-Set up monorepo skeleton (frontend/, backend/, worker/), Docker Compose infra (PostgreSQL + Redis), health endpoints, environment management, and cost/abuse guardrails.
+Set up Spring Boot backend skeleton with Docker Compose infra (PostgreSQL + Redis + RabbitMQ), fix pom.xml dependencies, and establish database connectivity.
 
 ## Completed
 
-- None yet.
+- Docker Compose file created (PostgreSQL 16, Redis 7, RabbitMQ 4)
+- application.properties configured for Docker services
+- Context files updated for Spring Boot architecture
+- Skills installed: shadcn/ui, Next.js App Router, TypeScript advanced types, Tailwind
 
 ## In Progress
 
-- None yet.
+- Fixing pom.xml: Spring Boot version 4.1.0 → 3.4.4, fixing starter artifact names, adding PostgreSQL driver, setting Java 21
 
 ## Next Up
 
-1. Create project skeleton with frontend/, backend/, shared/ directories
-2. Set up Docker Compose with PostgreSQL and Redis
-3. Add health check endpoints to backend
-4. Configure logger and request ID middleware
-5. Add Redis rate limiter (5 runs/day/IP)
-6. Set up environment variable template and validation
+1. Verify `docker compose up -d` starts all services cleanly
+2. Verify `./mvnw spring-boot:run` compiles and connects to PostgreSQL
+3. Add health check endpoint (`GET /api/health`)
+4. Configure RabbitMQ queue and `@Async` worker skeleton
+5. Add Redis rate limiter filter
+6. Create JPA entities for runs, test_cases, test_results, findings
+7. Create REST controller stubs (POST /api/test, GET /api/report/:id, GET /api/test/:runId/status)
 
 ## Open Questions
 
-- Should the worker be a separate service or a process spawned by the backend? (Doc suggests isolated process — confirm deployment model)
-- What is the target cloud provider for MVP deployment? Railway + Supabase + Vercel is recommended in docs
-- Should we use Prisma or raw SQL for database access? (Recommendation: Prisma for speed, raw SQL for complex queries)
-- What is the exact Gemini API model name and free tier limits to configure?
+- What is the target cloud provider for production? (Neon for Postgres, Railway for Spring Boot backend, Vercel for frontend — confirm)
+- Gemini or OpenAI for AI calls? (Using OpenAI SDK with swappable baseURL — confirm default provider)
+- Should we add Springdoc/OpenAPI for API documentation?
 
 ## Architecture Decisions
 
-- **Monorepo with three packages**: frontend (Next.js), backend (Express), shared (types/schemas). Separating concerns cleanly while sharing type definitions.
-- **BullMQ over in-process execution**: Ensures backend stays responsive under load; job queue provides retry, dead-letter, and observability out of the box.
-- **Two-call AI architecture**: First call generates adversarial payloads with expected behavior; second call (on suspicious subset only) provides semantic judgement. This limits AI cost while delivering the core differentiator.
-- **Gemini Flash as default AI provider**: Free tier sufficient for MVP; provider abstraction allows swapping to Claude later without code changes.
+- **Spring Boot + Maven over Express**: The backend is now Spring Boot 3.4 with Java 21 + Maven. Better portfolio value, cleaner REST APIs, built-in JPA/WebSocket/AMQP support.
+- **RabbitMQ over BullMQ**: Native Spring AMQP support eliminates separate worker process. `@Async` on the consumer handles concurrency. No separate deployable needed.
+- **OpenAI SDK over custom adapter**: The OpenAI Java SDK supports custom `baseUrl` — swap between Gemini (free via OpenAI-compatible endpoint), OpenAI, or Claude by changing config. No adapter layer needed.
+- **PostgreSQL in Docker for local dev, Neon for prod**: PostgreSQL chosen over SQLite for Spring Boot compatibility (JPA/Hibernate is PostgreSQL-native). Neon free tier for production.
 - **No user auth for MVP**: Anonymous usage with IP-based rate limiting reduces friction and accelerates time to first run.
+- **Vercel for frontend, Railway for backend**: Frontend on Vercel Free (Next.js), backend on Railway free tier (Java/Spring Boot container).
 
 ## Session Notes
 
 - Context files generated on 2026-07-25 from project documentation in Doc/ folder
-- Project README references a 4-week MVP build with phased execution plan
-- Solo engineer model — scope discipline and weekly ship cadence are critical
+- Switched from Express/Node to Spring Boot/Java on user request for resume value
+- Docker Compose chosen over native installs for Postgres/Redis/RabbitMQ — zero machine pollution
+- OpenAI SDK chosen over custom provider adapter — model-swappable via baseURL out of the box
