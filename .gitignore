@@ -17,14 +17,33 @@ Thumbs.db
 .ensodo/
 .local/
 
-# Project
-node_modules/
-vendor/
-.env
-.env
-dist/
-.next/
-*.tsbuildinfo
-coverage/
+# Java / Spring Boot / Maven
+backend/target/
+backend/*.class
+backend/*.jar
+backend/*.war
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/HELP.md
 
-context/templates
+# Gradle (if switched later)
+backend/.gradle/
+backend/build/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Node / Next.js (frontend)
+node_modules/
+.next/
+out/
+
+# Docker
+docker-data/
+
+# Logs
+*.log
+backend/logs/
