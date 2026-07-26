@@ -5,6 +5,8 @@
 
 package me.kripanshu.backend.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import me.kripanshu.backend.entity.Endpoint;
@@ -14,5 +16,5 @@ import me.kripanshu.backend.entity.Endpoint;
  * @author home
  */
 public interface EndPointRepository extends JpaRepository<Endpoint, String> {
-
+    List<Endpoint> findByProjectId(String projectId);
 }
