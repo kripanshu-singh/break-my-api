@@ -26,7 +26,7 @@ public class Endpoint {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
-    private Project projects;
+    private Project project;
 
     @Column(nullable = false)
     private String path;
