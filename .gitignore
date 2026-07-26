@@ -22,3 +22,9 @@ node_modules/
 vendor/
 .env
 .env
+dist/
+.next/
+*.tsbuildinfo
+coverage/
+
+context/templates
