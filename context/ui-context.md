@@ -39,7 +39,7 @@ Dark-only workspace aesthetic. No light mode. The design language is a dark tech
 
 ## Component Library
 
-Built with Tailwind CSS. No external component library — use Tailwind utility classes directly. Components live in `frontend/components/`. Reusable primitives (Button, Input, Card, Badge) should be built as simple Tailwind-wrapped components without external dependencies.
+shadcn/ui on top of Tailwind. Components live in `frontend/components/ui/`. Use `npx shadcn@latest add <component>` to install new primitives rather than writing from scratch. Interactive components (Button, Dialog, DropdownMenu, etc.) are pre-configured as `'use client'`. Cards, Badges, and static display components can be used in server components. All components respect the CSS custom property tokens defined above — no hardcoded colors.
 
 ## Layout Patterns
 

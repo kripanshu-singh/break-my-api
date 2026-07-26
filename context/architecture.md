@@ -5,7 +5,7 @@
 | Layer       | Technology                           | Role                                         |
 | ----------- | ------------------------------------ | -------------------------------------------- |
 | Framework   | Next.js + TypeScript                 | Frontend app, routing, server components     |
-| UI          | Tailwind CSS                         | Styling and design system                    |
+| UI          | Tailwind CSS + shadcn/ui             | Styling and component system                 |
 | Backend     | Node.js / Express + TypeScript       | API intake, orchestration, report retrieval  |
 | Queue       | BullMQ + Redis                       | Job queue for test execution, rate limiting  |
 | Worker      | Isolated Node.js process             | Executes adversarial requests concurrently   |

@@ -38,6 +38,12 @@
 - Responsive design with mobile-first breakpoints
 - Dark mode only — no light mode variants
 
+## shadcn/ui
+
+- Install new components via `npx shadcn@latest add` — never write Radix primitives from scratch
+- Components in `components/ui/` are auto-generated; do not edit them manually
+- Add `'use client'` only at the shadcn component boundary — keep page logic in server components
+
 ## API Routes (Backend)
 
 - `POST /api/test` — validates input, calls AI via adapter, creates DB records, enqueues BullMQ job, returns runId
@@ -66,6 +72,7 @@
 
 - `frontend/app/` — Next.js pages and layouts
 - `frontend/components/` — Reusable React components
+- `frontend/components/ui/` — shadcn/ui primitives (auto-generated, do not edit manually)
 - `frontend/lib/` — Frontend utilities, API client, types
 - `backend/routes/` — Express route handlers
 - `backend/middleware/` — Express middleware (error handler, rate limiter, validator)
