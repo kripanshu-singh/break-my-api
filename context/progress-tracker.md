@@ -30,7 +30,30 @@ Establish database schema, JPA entities, and repository layer. Then build REST c
 1. Add health check endpoint (`GET /api/health`)
 2. Configure RabbitMQ queue and `@Async` worker skeleton
 3. Add Redis rate limiter filter
-4. Create REST controller stubs
+4. Add DTO validation error tests
+
+## 2026-07-27 — ProjectController created
+
+- Created `ProjectController` in `controller/` package with constructor injection
+- Endpoints: `POST /api/projects`, `GET /api/projects/{id}`, `GET /api/projects`, `PUT /api/projects/{id}`, `DELETE /api/projects/{id}`
+- Uses `@Valid` for request validation, `ApiResponse<T>` wrapper, proper HTTP status codes (201 for create, 204 for delete)
+- Delegates all logic to `ProjectService` — controller stays thin
+
+## 2026-07-27 — Global and app exception handler created
+
+- Created custom exception hierarchy:
+  - `ResourceNotFoundException` (404) — structured not-found errors with resource name and ID
+  - `DuplicateResourceException` (409) — conflict errors with resource name, field, and value
+  - `BadRequestException` (400) — general bad request errors
+- Created `GlobalExceptionHandler` (`@RestControllerAdvice`) handling:
+  - Custom exceptions → appropriate HTTP status codes
+  - `MethodArgumentNotValidException` (400) with per-field error details
+  - `ConstraintViolationException` (400) with constraint violation details
+  - `HttpMessageNotReadableException` (400), `MissingServletRequestParameterException` (400), `MethodArgumentTypeMismatchException` (400)
+  - `NoSuchElementException` (404), `IllegalArgumentException` (400)
+  - Fallback `Exception` (500) with error logging
+  - All responses use consistent `ApiResponse<T>` shape with timestamp in meta
+- Updated `ProjectService` to throw `ResourceNotFoundException` and `DuplicateResourceException` instead of raw Java exceptions
 
 ## Open Questions
 
