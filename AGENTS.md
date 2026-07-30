@@ -22,3 +22,12 @@ meaningful implementation change.
 If implementation changes the architecture, scope, or
 standards documented in the context files, update the
 relevant file before continuing.
+
+## Skills
+
+Load these skills when working in their respective areas:
+
+- `java-springboot` — always load first (Spring Boot backend, JPA, REST APIs, exception handling, testing)
+- `shadcn` — when adding or modifying shadcn/ui components
+- `nextjs-app-router-patterns` — when working on frontend pages, server components, or data fetching
+- `typescript-advanced-types` — when defining shared types, DTOs, or complex type logic
