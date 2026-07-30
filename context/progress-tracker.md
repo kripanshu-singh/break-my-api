@@ -25,6 +25,14 @@ Establish database schema, JPA entities, and repository layer. Then build REST c
 
 - None — waiting on next tasks
 
+## 2026-07-30 — Data model documentation added to architecture.md
+
+- Expanded the Storage Model section in `architecture.md` with:
+  - Data flow diagram showing how all 6 tables work together (e-commerce payment service scenario)
+  - Detailed per-table schema documentation (columns, types, notes)
+  - Real-world example rows for each table
+  - Relationship and cascade summary table
+
 ## Next Up
 
 1. Add health check endpoint (`GET /api/health`)
