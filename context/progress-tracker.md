@@ -32,6 +32,30 @@ Establish database schema, JPA entities, and repository layer. Then build REST c
 3. Add Redis rate limiter filter
 4. Add DTO validation error tests
 
+## 2026-07-30 — Endpoint CRUD (Entity, DTOs, Service, Controller)
+
+- Added `createdAt`/`updatedAt` timestamp fields to `Endpoint` entity with `@PrePersist`/`@PreUpdate` lifecycle callbacks
+- Created DTOs:
+  - `CreateEndPointRequest` — Jakarta `@NotBlank` + `@Pattern` validation for path (must start with `/`) and method (whitelist)
+  - `EndPointResponse` — full response with all endpoint fields + timestamps
+  - `UpdateEndPointRequest` — all optional fields for partial updates
+- Cleaned up `EndPointRepository` — removed auto-generated NetBeans comments
+- Created `EndPointService` with full CRUD + business validation:
+  - `createEndPoint` — validates project exists, validates method/path, saves
+  - `getEndpoint` — find by id or 404
+  - `getEndpointsByProjectId` — list by project with existence check
+  - `updateEndpoint` — partial update with field-level validation
+  - `deleteEndpoint` — exists check then delete
+  - Service-level `validateMethod()` and `validatePath()` guarding against invalid input
+- Created `EndPointController` with 5 REST endpoints:
+  - `POST /api/endpoints/{projectId}` — 201 Created
+  - `GET /api/endpoints/{id}` — 200 OK
+  - `GET /api/endpoints/project/{projectId}` — 200 OK (list by project)
+  - `PUT /api/endpoints/{id}` — 200 OK
+  - `DELETE /api/endpoints/{id}` — 204 No Content
+- Fixed `@Controller` → `@RestController`, broken route templates, and return status codes
+- Updated `architecture.md` to reflect actual package paths (`me.kripanshu.backend.*`)
+
 ## 2026-07-27 — ProjectController created
 
 - Created `ProjectController` in `controller/` package with constructor injection

@@ -18,12 +18,13 @@
 
 - `frontend/app/` — Next.js pages: landing/input form, live dashboard, shareable report page
 - `frontend/components/` — Reusable UI components: Dashboard (live results), ReportCard (shareable)
-- `backend/src/main/java/com/breakmyapi/controller/` — Spring REST controllers: POST /api/test, GET /api/report/:id, GET /api/test/:runId/status
-- `backend/src/main/java/com/breakmyapi/service/` — Business logic: AI calls, orchestration, report aggregation
-- `backend/src/main/java/com/breakmyapi/model/` — JPA entities: Run, TestCase, TestResult, Finding
-- `backend/src/main/java/com/breakmyapi/repository/` — Spring Data JPA repositories
-- `backend/src/main/java/com/breakmyapi/config/` — Spring config: WebSocket, RabbitMQ, RestClient, rate limiter
-- `backend/src/main/java/com/breakmyapi/worker/` — `@Async` job processor consuming RabbitMQ messages
+- `backend/src/main/java/me/kripanshu/backend/controller/` — Spring REST controllers: Project (CRUD), Endpoint (CRUD), plus future POST /api/test, GET /api/report/:id, GET /api/test/:runId/status
+- `backend/src/main/java/me/kripanshu/backend/service/` — Business logic: ProjectService, EndPointService, AI calls, orchestration, report aggregation
+- `backend/src/main/java/me/kripanshu/backend/entity/` — JPA entities: Project, Endpoint, Baseline, TestSuite, TestRun, TestResult
+- `backend/src/main/java/me/kripanshu/backend/repository/` — Spring Data JPA repositories
+- `backend/src/main/java/me/kripanshu/backend/dto/` — Request/response DTOs (records): ApiResponse, CreateProjectRequest, ProjectResponse, UpdateProjectRequest, CreateEndPointRequest, EndPointResponse, UpdateEndPointRequest
+- `backend/src/main/java/me/kripanshu/backend/config/` — Spring config: WebSocket, RabbitMQ, RestClient, rate limiter
+- `backend/src/main/java/me/kripanshu/backend/worker/` — `@Async` job processor consuming RabbitMQ messages
 
 ## Storage Model
 
