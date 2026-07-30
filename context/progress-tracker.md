@@ -18,12 +18,41 @@ Establish database schema, JPA entities, and repository layer. Then build REST c
 - Skills installed: shadcn/ui, Next.js App Router, TypeScript advanced types, Tailwind
 - pom.xml fixed (Spring Boot 3.4.4, Java 21, all starters added)
 - Project compiles successfully (`./mvnw compile`)
-- Entities created: Project, Endpoint, Baseline, TestSuite, TestRun, TestResult
-- Repositories created: ProjectRepository, EndpointRepository, BaselineRepository, TestSuiteRepository, TestRunRepository, TestResultRepository
+- Entities created: Project, Endpoint, ExpectedResponse, TestSuite, TestRun, TestResult
+- Repositories created: ProjectRepository, EndpointRepository, ExpectedResponseRepository, TestSuiteRepository, TestRunRepository, TestResultRepository
 
 ## In Progress
 
 - None — waiting on next tasks
+
+## 2026-07-30 — Renamed Baseline → ExpectedResponse across the entire codebase
+
+- Renamed entity, repository, all 3 DTOs, service, and controller
+- Updated all Java references (imports, type names, variable names, method names, log messages)
+- Updated table name from `baselines` to `expected_responses`
+- Updated API route from `/api/baselines` to `/api/expected-responses`
+- Updated all context file references in `architecture.md` and `progress-tracker.md`
+- Project compiles cleanly with zero remaining "Baseline"/"baseline" references in Java files
+
+## 2026-07-30 — ExpectedResponse CRUD created (DTOs, Service, Controller)
+
+- Created DTOs:
+  - `CreateExpectedResponseRequest` — `@NotNull` + `@Min(100)` `@Max(599)` validation on `expectedStatus`
+  - `ExpectedResponseResponse` — full response with all expected response fields + timestamps
+  - `UpdateExpectedResponseRequest` — all optional fields for partial updates
+- Created `ExpectedResponseService` with full CRUD + business validation:
+  - `createExpectedResponse` — validates endpoint exists, enforces 1:1 (no duplicate expected response per endpoint)
+  - `getExpectedResponse` — find by id or 404
+  - `getExpectedResponseByEndpointId` — find by endpoint FK with existence check
+  - `updateExpectedResponse` — partial update with field-level validation for status range and latency bounds
+  - `deleteExpectedResponse` — exists check then delete
+- Created `ExpectedResponseController` with 5 REST endpoints:
+  - `POST /api/expected-responses/{endpointId}` — 201 Created
+  - `GET /api/expected-responses/{id}` — 200 OK
+  - `GET /api/expected-responses/by-endpoint/{endpointId}` — 200 OK (1:1 lookup)
+  - `PUT /api/expected-responses/{id}` — 200 OK
+  - `DELETE /api/expected-responses/{id}` — 204 No Content
+- Project compiles successfully
 
 ## 2026-07-30 — Data model documentation added to architecture.md
 

@@ -20,7 +20,7 @@
 - `frontend/components/` — Reusable UI components: Dashboard (live results), ReportCard (shareable)
 - `backend/src/main/java/me/kripanshu/backend/controller/` — Spring REST controllers: Project (CRUD), Endpoint (CRUD), plus future POST /api/test, GET /api/report/:id, GET /api/test/:runId/status
 - `backend/src/main/java/me/kripanshu/backend/service/` — Business logic: ProjectService, EndPointService, AI calls, orchestration, report aggregation
-- `backend/src/main/java/me/kripanshu/backend/entity/` — JPA entities: Project, Endpoint, Baseline, TestSuite, TestRun, TestResult
+- `backend/src/main/java/me/kripanshu/backend/entity/` — JPA entities: Project, Endpoint, ExpectedResponse, TestSuite, TestRun, TestResult
 - `backend/src/main/java/me/kripanshu/backend/repository/` — Spring Data JPA repositories
 - `backend/src/main/java/me/kripanshu/backend/dto/` — Request/response DTOs (records): ApiResponse, CreateProjectRequest, ProjectResponse, UpdateProjectRequest, CreateEndPointRequest, EndPointResponse, UpdateEndPointRequest
 - `backend/src/main/java/me/kripanshu/backend/config/` — Spring config: WebSocket, RabbitMQ, RestClient, rate limiter
@@ -33,11 +33,11 @@
 ```text
 Project (Payment Gateway)
  ├── Endpoint (POST /v1/charges)
- │    └── Baseline (Golden response: 200 OK, JSON schema, <500ms)
+ │    └── ExpectedResponse (Golden response: 200 OK, JSON schema, <500ms)
  │
  └── Test Suite (Boundary Fuzzing & Regressions)
       └── Test Run #101 (Executed at 10:00 PM)
-           ├── Test Result 1: Baseline Request (PASSED)
+           ├── Test Result 1: Standard Request (PASSED)
            ├── Test Result 2: Null Amount Mutation (FAILED - 500 Error)
            └── Test Result 3: String Overflow Mutation (PASSED - 400 Bad Request)
 ```
@@ -80,9 +80,9 @@ Belongs to a **Project** (1:N). Each row represents a single API route, its HTTP
 | `created_at` | TIMESTAMP | Not null, auto-set |
 | `updated_at` | TIMESTAMP | Auto-set |
 
-#### 3. `baselines` (Golden Standard Snapshot)
+#### 3. `expected_responses` (Golden Standard Snapshot)
 
-Has a **1:1 relationship** with an **Endpoint**. Records what a successful, healthy API response looks like. The fuzzing engine compares future runs against this baseline to spot bugs or performance regressions.
+Has a **1:1 relationship** with an **Endpoint**. Records what a successful, healthy API response looks like. The fuzzing engine compares future runs against this expected response to spot bugs or performance regressions.
 
 | Column | Type | Notes |
 |--------|------|-------|
@@ -90,7 +90,7 @@ Has a **1:1 relationship** with an **Endpoint**. Records what a successful, heal
 | `endpoint_id` | UUID | FK → endpoints, unique, not null |
 | `expected_status` | INTEGER | Not null (e.g. 200) |
 | `expected_schema` | TEXT | JSON schema of expected response |
-| `sample_response` | TEXT | Baseline snapshot body |
+| `sample_response` | TEXT | ExpectedResponse snapshot body |
 | `max_latency_ms` | BIGINT | SLA threshold (e.g. 500ms) |
 | `created_at` | TIMESTAMP | Not null, auto-set |
 | `updated_at` | TIMESTAMP | Auto-set |
@@ -146,7 +146,7 @@ Belongs to a **TestRun** (1:N). Every mutated payload generates one row — capt
 | Parent | Child | Type | On Delete Action |
 |--------|-------|------|------------------|
 | `projects` | `endpoints` | **1:N** | `CASCADE` — deleting a project removes its endpoints |
-| `endpoints` | `baselines` | **1:1** | `CASCADE` — deleting an endpoint removes its baseline |
+| `endpoints` | `expected_responses` | **1:1** | `CASCADE` — deleting an endpoint removes its expected response |
 | `projects` | `test_suites` | **1:N** | `CASCADE` — deleting a project removes its test suites |
 | `test_suites` | `test_runs` | **1:N** | `RESTRICT` — keep run logs even if suite changes |
 | `test_runs` | `test_results` | **1:N** | `CASCADE` — deleting a run cleans up its result logs |

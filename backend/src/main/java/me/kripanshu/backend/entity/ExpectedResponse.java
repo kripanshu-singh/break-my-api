@@ -21,8 +21,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "baselines")
-public class Baseline {
+@Table(name = "expected_responses")
+public class ExpectedResponse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
