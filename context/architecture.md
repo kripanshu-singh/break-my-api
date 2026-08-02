@@ -18,8 +18,8 @@
 
 - `frontend/app/` — Next.js pages: landing/input form, live dashboard, shareable report page
 - `frontend/components/` — Reusable UI components: Dashboard (live results), ReportCard (shareable)
-- `backend/src/main/java/me/kripanshu/backend/controller/` — Spring REST controllers: Project (CRUD), Endpoint (CRUD), plus future POST /api/test, GET /api/report/:id, GET /api/test/:runId/status
-- `backend/src/main/java/me/kripanshu/backend/service/` — Business logic: ProjectService, EndPointService, AI calls, orchestration, report aggregation
+- `backend/src/main/java/me/kripanshu/backend/controller/` — Spring REST controllers: Project (CRUD), Endpoint (CRUD), TestSuite (CRUD), Baseline (upsert/probe), plus future POST /api/test, GET /api/report/:id, GET /api/test/:runId/status
+- `backend/src/main/java/me/kripanshu/backend/service/` — Business logic: ProjectService, EndPointService, TestSuiteService, BaselineService, AI calls, orchestration, report aggregation
 - `backend/src/main/java/me/kripanshu/backend/entity/` — JPA entities: Project, Endpoint, Baseline, TestSuite, TestRun, TestResult
 - `backend/src/main/java/me/kripanshu/backend/repository/` — Spring Data JPA repositories
 - `backend/src/main/java/me/kripanshu/backend/dto/` — Request/response DTOs (records): ApiResponse, CreateProjectRequest, ProjectResponse, UpdateProjectRequest, CreateEndPointRequest, EndPointResponse, UpdateEndPointRequest, CreateBaselineRequest, BaselineResponse, ProbeResult
@@ -103,10 +103,12 @@ Belongs to a **Project** (1:N). Defines how BreakMyAPI should test endpoints —
 |--------|------|-------|
 | `id` | UUID | PK |
 | `project_id` | UUID | FK → projects, not null |
-| `name` | VARCHAR | Not null |
-| `configuration` | TEXT | JSON config (maxConcurrency, enableNullFuzzing, etc.) |
+| `name` | VARCHAR | Not null (e.g. `Boundary Fuzzing & Regressions`) |
+| `configuration` | TEXT | JSON config (maxConcurrency, perRequestTimeoutMs, maxResponseSizeBytes, runDurationLimitSeconds, judgeSuspiciousOnly, mutators) |
 | `created_at` | TIMESTAMP | Not null, auto-set |
 | `updated_at` | TIMESTAMP | Auto-set |
+
+Every project gets a `Default Fuzzing Profile` test suite auto-created on project creation, so a user can run tests without touching settings. The suite `configuration` is a typed `TestSuiteConfig` record that is validated at the API boundary and merged against defaults before persistence.
 
 #### 5. `test_runs` (Execution Event)
 

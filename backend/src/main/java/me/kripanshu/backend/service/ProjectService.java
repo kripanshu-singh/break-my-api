@@ -1,5 +1,6 @@
 package me.kripanshu.backend.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.kripanshu.backend.dto.CreateProjectRequest;
 import me.kripanshu.backend.dto.ProjectResponse;
@@ -9,7 +10,6 @@ import me.kripanshu.backend.exception.DuplicateResourceException;
 import me.kripanshu.backend.exception.ResourceNotFoundException;
 import me.kripanshu.backend.repository.ProjectRepository;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +18,11 @@ import java.util.List;
 @Service
 @Transactional
 @Slf4j
+@RequiredArgsConstructor
 public class ProjectService {
-    @Autowired
-    private ProjectRepository projectRepository;
+
+    private final ProjectRepository projectRepository;
+    private final TestSuiteService testSuiteService;
 
     public ProjectResponse createProject(@NotNull CreateProjectRequest request) {
         if (projectRepository.existsByName(request.name())) {
@@ -34,6 +36,7 @@ public class ProjectService {
         project.setVersion(request.version());
 
         project = projectRepository.save(project);
+        testSuiteService.createDefaultSuite(project);
         log.info("Created project: id={}, name={}", project.getId(), project.getName());
         return toResponse(project);
     }

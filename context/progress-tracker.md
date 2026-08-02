@@ -4,14 +4,15 @@ Update this file after every meaningful implementation change.
 
 ## Current Phase
 
-Phase 2 — Baseline Service and Controller Layer (Complete)
+Phase 2 — Test Suite Domain (Complete)
 
 ## Current Goal
 
-Build Baseline (expected response) sub-resource with upsert, probe, and auto-capture capabilities.
+Build the Test Suite (testing blueprint) sub-resource with CRUD, typed validated configuration, default fuzzing profile auto-creation, and RESTRICT-aware deletion.
 
 ## Completed
 
+- Test Suite domain implemented: entity (existing), DTOs, service, controller, tests
 - Docker Compose file created (PostgreSQL 16, Redis 7, RabbitMQ 4)
 - application.properties configured for Docker services
 - Context files updated for Spring Boot architecture
@@ -26,6 +27,27 @@ Build Baseline (expected response) sub-resource with upsert, probe, and auto-cap
 ## In Progress
 
 - None — waiting on next tasks
+
+## 2026-08-02 — Test Suite domain created (DTOs, Service, Controller, default profile)
+
+- Created `MutationType` enum (`entity` package): BOUNDARY, INJECTION, NULL_VALUES, INTEGER_OVERFLOW, LONG_STRINGS, WRONG_TYPES, MALFORMED_AUTH
+- Created DTOs:
+  - `TestSuiteConfig` — typed record with nullable fields (maxConcurrency, perRequestTimeoutMs, maxResponseSizeBytes, runDurationLimitSeconds, judgeSuspiciousOnly, mutators), `defaults()` factory, and `merge()` that overlays provided fields onto defaults
+  - `CreateTestSuiteRequest` — `@NotBlank` name + optional config
+  - `UpdateTestSuiteRequest` — all-optional name/config
+  - `TestSuiteResponse` — full suite with resolved config + timestamps
+- Created `TestSuiteService` with CRUD + business logic:
+  - `createTestSuite(projectId, request)` — project existence check, config merge + bounds validation (concurrency 1–50, timeout 1–60s, response size ≤1MB, duration ≤1h, ≥1 mutator), save
+  - `getTestSuite(projectId, id)` / `getTestSuitesByProjectId(projectId)` — read-only; verifies suite belongs to the project in path (404 otherwise)
+  - `updateTestSuite(projectId, id, request)` — partial update; rejects blank name; revalidates merged config
+  - `deleteTestSuite(projectId, id)` — returns 409 `ResourceInUseException` when test runs exist (RESTRICT invariant — run history retained), else deletes
+  - `createDefaultSuite(project)` — auto-creates a `Default Fuzzing Profile` suite with default config
+- Created `TestSuiteController` with fully nested sub-resource routes under `/api/projects/{projectId}/test-suites`: POST (201), GET list (200), GET by id (200), PUT (200), DELETE (204)
+- Created `ResourceInUseException` (409) + `GlobalExceptionHandler` handler
+- Added `existsBySuiteId` to `TestRunRepository`
+- Refactored `ProjectService` to constructor injection and auto-creates the Default Fuzzing Profile suite on project creation (zero-friction default for users)
+- Added 7 unit tests for `TestSuiteService` (defaults merge, partial merge, invalid concurrency, missing project, cross-project 404, delete-with-runs 409, delete success)
+- Project compiles and all 8 tests pass (`./mvnw test`)
 
 ## 2026-07-30 — Enhanced ExpectedResponse → Baseline (upsert, probe, sub-resource routes)
 
@@ -88,9 +110,10 @@ Build Baseline (expected response) sub-resource with upsert, probe, and auto-cap
 ## Next Up
 
 1. Add health check endpoint (`GET /api/health`)
-2. Configure RabbitMQ queue and `@Async` worker skeleton
-3. Add Redis rate limiter filter
-4. Add DTO validation error tests
+2. Build TestRun domain (CRUD + run status) — suites need a run-triggering endpoint (`POST /api/test-suites/{id}/run`) once the worker exists
+3. Configure RabbitMQ queue and `@Async` worker skeleton
+4. Add Redis rate limiter filter
+5. Add DTO validation error tests
 
 ## 2026-07-30 — Endpoint CRUD (Entity, DTOs, Service, Controller)
 
