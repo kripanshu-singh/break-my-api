@@ -5,5 +5,6 @@ public record UpdateEndPointRequest(
         String method,
         String headers,
         String queryParams,
-        String bodySchema
+        String bodySchema,
+        String samplePayload
 ) {}

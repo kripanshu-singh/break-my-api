@@ -2,7 +2,7 @@ package me.kripanshu.backend.dto;
 
 import java.time.LocalDateTime;
 
-public record ExpectedResponseResponse(
+public record BaselineResponse(
         String id,
         String endpointId,
         Integer expectedStatus,

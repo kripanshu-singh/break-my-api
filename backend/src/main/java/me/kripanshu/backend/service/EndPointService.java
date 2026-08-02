@@ -42,6 +42,7 @@ public class EndPointService {
         endpoint.setHeaders(request.headers());
         endpoint.setQueryParams(request.queryParams());
         endpoint.setBodySchema(request.bodySchema());
+        endpoint.setSamplePayload(request.samplePayload());
 
         endpoint = endPointRepository.save(endpoint);
         log.info("Created endpoint: id={}, path={}, method={}, projectId={}",
@@ -87,6 +88,9 @@ public class EndPointService {
         if (request.bodySchema() != null) {
             endpoint.setBodySchema(request.bodySchema());
         }
+        if (request.samplePayload() != null) {
+            endpoint.setSamplePayload(request.samplePayload());
+        }
 
         endpoint = endPointRepository.save(endpoint);
         log.info("Updated endpoint: id={}", endpoint.getId());
@@ -123,6 +127,7 @@ public class EndPointService {
                 endpoint.getHeaders(),
                 endpoint.getQueryParams(),
                 endpoint.getBodySchema(),
+                endpoint.getSamplePayload(),
                 endpoint.getCreatedAt(),
                 endpoint.getUpdatedAt()
         );

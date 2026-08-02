@@ -15,5 +15,6 @@ public record CreateEndPointRequest(
 
         String headers,
         String queryParams,
-        String bodySchema
+        String bodySchema,
+        String samplePayload
 ) { }

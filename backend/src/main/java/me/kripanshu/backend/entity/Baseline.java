@@ -11,6 +11,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,8 +22,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "expected_responses")
-public class ExpectedResponse {
+@Table(
+        name = "base_lines",
+        uniqueConstraints = @UniqueConstraint(name = "uk_base_line_endpoint", columnNames = "endpoint_id")
+)
+public class Baseline {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

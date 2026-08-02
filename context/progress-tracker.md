@@ -4,11 +4,11 @@ Update this file after every meaningful implementation change.
 
 ## Current Phase
 
-Phase 1 — Entity and Repository Layer (Complete)
+Phase 2 — Baseline Service and Controller Layer (Complete)
 
 ## Current Goal
 
-Establish database schema, JPA entities, and repository layer. Then build REST controllers and service layer.
+Build Baseline (expected response) sub-resource with upsert, probe, and auto-capture capabilities.
 
 ## Completed
 
@@ -18,12 +18,35 @@ Establish database schema, JPA entities, and repository layer. Then build REST c
 - Skills installed: shadcn/ui, Next.js App Router, TypeScript advanced types, Tailwind
 - pom.xml fixed (Spring Boot 3.4.4, Java 21, all starters added)
 - Project compiles successfully (`./mvnw compile`)
-- Entities created: Project, Endpoint, ExpectedResponse, TestSuite, TestRun, TestResult
-- Repositories created: ProjectRepository, EndpointRepository, ExpectedResponseRepository, TestSuiteRepository, TestRunRepository, TestResultRepository
+- Entities created: Project, Endpoint, Baseline, TestSuite, TestRun, TestResult
+- Repositories created: ProjectRepository, EndpointRepository, BaselineRepository, TestSuiteRepository, TestRunRepository, TestResultRepository
+- Baseline entity, service, controller (upsert, probe, get-by-endpoint, delete)
+- JsonSchemaGenerator and RestClientConfig for probe auto-capture
 
 ## In Progress
 
 - None — waiting on next tasks
+
+## 2026-07-30 — Enhanced ExpectedResponse → Baseline (upsert, probe, sub-resource routes)
+
+- Renamed entity `ExpectedResponse` → `Baseline` (table `expected_responses` preserved)
+- Renamed repository `ExpectedResponseRepository` → `BaselineRepository`
+- Replaced CRUD DTOs: `CreateBaselineRequest`, `BaselineResponse` (removed `UpdateExpectedResponseRequest`)
+- Added `ProbeResult` DTO for probe response
+- Created `BaselineService` with 4 operations:
+  - `createOrUpdateBaseline(endpointId, request)` — upsert: fetch or create baseline, then save
+  - `getBaselineByEndpoint(endpointId)` — query by endpoint FK, 404 if none
+  - `deleteBaseline(endpointId)` — remove by endpoint FK, keep parent endpoint intact
+  - `probeAndSetBaseline(endpointId)` — dispatch real HTTP request via `RestClient`, capture status/latency/body, auto-derive JSON Schema, save/update baseline
+- Created `BaselineController` with sub-resource routes under `/api/v1/endpoints/{endpointId}/baseline`:
+  - `POST` — create or update baseline (201)
+  - `POST /probe` — probe endpoint and auto-capture baseline (200)
+  - `GET` — get baseline by endpoint (200)
+  - `DELETE` — delete baseline (204)
+- Created `RestClientConfig` — `RestClient` bean for probe HTTP dispatch
+- Created `JsonSchemaGenerator` — lightweight utility that infers JSON Schema (draft-07) from a JSON response body using Jackson
+- Deleted all old `ExpectedResponse*` files
+- Project compiles successfully
 
 ## 2026-07-30 — Renamed Baseline → ExpectedResponse across the entire codebase
 

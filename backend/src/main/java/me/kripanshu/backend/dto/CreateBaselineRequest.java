@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public record CreateExpectedResponseRequest(
+public record CreateBaselineRequest(
         @NotNull
         @Min(100)
         @Max(599)

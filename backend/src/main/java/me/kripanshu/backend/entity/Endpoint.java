@@ -37,6 +37,9 @@ public class Endpoint {
     @Column(name = "body_schema", columnDefinition = "TEXT")
     private String bodySchema;
 
+    @Column(name = "sample_payload", columnDefinition = "TEXT")
+    private String samplePayload;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

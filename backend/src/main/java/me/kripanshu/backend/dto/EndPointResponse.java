@@ -10,6 +10,7 @@ public record EndPointResponse(
         String headers,
         String queryParams,
         String bodySchema,
+        String samplePayload,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
