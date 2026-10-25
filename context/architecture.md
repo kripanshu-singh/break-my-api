@@ -57,9 +57,9 @@ Defines the target application or microservice to test. Stores base host URL and
 | Column | Type | Notes |
 |--------|------|-------|
 | `id` | UUID | PK, auto-generated |
-| `name` | VARCHAR | Not null |
+| `name` | VARCHAR | Not null, unique — stable human-readable project identity |
 | `description` | VARCHAR | Not null |
-| `base_url` | VARCHAR | Not null |
+| `base_url` | VARCHAR | Not null, unique — canonical target identity; surrounding whitespace and one trailing slash are removed |
 | `version` | VARCHAR | Nullable |
 | `created_at` | TIMESTAMP | Not null, auto-set |
 | `updated_at` | TIMESTAMP | Auto-set |

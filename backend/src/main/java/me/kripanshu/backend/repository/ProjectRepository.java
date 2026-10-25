@@ -17,5 +17,7 @@ import me.kripanshu.backend.entity.Project;
  */
 public interface ProjectRepository extends JpaRepository<Project, String> {
     boolean existsByName(String name);
-    Optional<Project> findByName(String name);
+    boolean existsByNameAndIdNot(String name, String id);
+    boolean existsByBaseUrl(String baseUrl);
+    boolean existsByBaseUrlAndIdNot(String baseUrl, String id);
 }

@@ -28,11 +28,15 @@ public class ProjectService {
         if (projectRepository.existsByName(request.name())) {
             throw new DuplicateResourceException("Project", "name", request.name());
         }
+        String normalizedBaseUrl = normalizeBaseUrl(request.baseUrl());
+        if (projectRepository.existsByBaseUrl(normalizedBaseUrl)) {
+            throw new DuplicateResourceException("Project", "baseUrl", normalizedBaseUrl);
+        }
 
         Project project = new Project();
         project.setName(request.name());
         project.setDescription(request.description());
-        project.setBaseUrl(request.baseUrl());
+        project.setBaseUrl(normalizedBaseUrl);
         project.setVersion(request.version());
 
         project = projectRepository.save(project);
@@ -60,7 +64,7 @@ public class ProjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project", id));
 
         if (request.name() != null) {
-            if (!request.name().equals(project.getName()) && projectRepository.existsByName(request.name())) {
+            if (!request.name().equals(project.getName()) && projectRepository.existsByNameAndIdNot(request.name(), id)) {
                 throw new DuplicateResourceException("Project", "name", request.name());
             }
             project.setName(request.name());
@@ -69,7 +73,12 @@ public class ProjectService {
             project.setDescription(request.description());
         }
         if (request.baseUrl() != null) {
-            project.setBaseUrl(request.baseUrl());
+            String normalizedBaseUrl = normalizeBaseUrl(request.baseUrl());
+            if (!normalizedBaseUrl.equals(project.getBaseUrl())
+                    && projectRepository.existsByBaseUrlAndIdNot(normalizedBaseUrl, id)) {
+                throw new DuplicateResourceException("Project", "baseUrl", normalizedBaseUrl);
+            }
+            project.setBaseUrl(normalizedBaseUrl);
         }
         if (request.version() != null) {
             project.setVersion(request.version());
@@ -98,5 +107,13 @@ public class ProjectService {
                 project.getCreatedAt(),
                 project.getUpdatedAt()
         );
+    }
+
+    private String normalizeBaseUrl(String baseUrl) {
+        String normalized = baseUrl.trim();
+        if (normalized.length() > 1 && normalized.endsWith("/")) {
+            normalized = normalized.substring(0, normalized.length() - 1);
+        }
+        return normalized;
     }
 }

@@ -28,6 +28,13 @@ Build the Test Suite (testing blueprint) sub-resource with CRUD, typed validated
 
 - None — waiting on next tasks
 
+## 2026-10-25 — Project identity uniqueness
+
+- Enforced unique project names and normalized unique base URLs at the entity, repository, and service layers
+- Base URLs are trimmed and have one trailing slash removed before persistence and duplicate checks
+- Added duplicate base URL checks for project creation and updates, plus unit coverage
+- Documented the project identity invariant in `architecture.md`
+
 ## 2026-08-02 — Test Suite domain created (DTOs, Service, Controller, default profile)
 
 - Created `MutationType` enum (`entity` package): BOUNDARY, INJECTION, NULL_VALUES, INTEGER_OVERFLOW, LONG_STRINGS, WRONG_TYPES, MALFORMED_AUTH

@@ -24,13 +24,13 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(nullable = false)
     private String description;
 
-    @Column(name = "base_url", nullable = false)
+    @Column(name = "base_url", nullable = false, unique = true)
     private String baseUrl;
 
     private String version;
