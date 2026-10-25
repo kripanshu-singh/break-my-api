@@ -35,6 +35,12 @@ Build the Test Suite (testing blueprint) sub-resource with CRUD, typed validated
 - Added duplicate base URL checks for project creation and updates, plus unit coverage
 - Documented the project identity invariant in `architecture.md`
 
+## 2026-10-25 — Project deletion and test suite lifecycle
+
+- Project deletion now removes endpoint baselines, endpoints, and test suites explicitly
+- Project deletion returns a clear `409 Conflict` when test runs exist, preserving run history
+- Added repository checks for runs anywhere under a project to avoid raw foreign-key errors
+
 ## 2026-08-02 — Test Suite domain created (DTOs, Service, Controller, default profile)
 
 - Created `MutationType` enum (`entity` package): BOUNDARY, INJECTION, NULL_VALUES, INTEGER_OVERFLOW, LONG_STRINGS, WRONG_TYPES, MALFORMED_AUTH

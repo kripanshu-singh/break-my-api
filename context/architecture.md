@@ -149,7 +149,7 @@ Belongs to a **TestRun** (1:N). Every mutated payload generates one row — capt
 |--------|-------|------|------------------|
 | `projects` | `endpoints` | **1:N** | `CASCADE` — deleting a project removes its endpoints |
 | `endpoints` | `expected_responses` | **1:1** | `CASCADE` — deleting an endpoint removes its baseline |
-| `projects` | `test_suites` | **1:N** | `CASCADE` — deleting a project removes its test suites |
+| `projects` | `test_suites` | **1:N** | Application-managed cascade — deleting a project removes setup data when no test runs exist |
 | `test_suites` | `test_runs` | **1:N** | `RESTRICT` — keep run logs even if suite changes |
 | `test_runs` | `test_results` | **1:N** | `CASCADE` — deleting a run cleans up its result logs |
 

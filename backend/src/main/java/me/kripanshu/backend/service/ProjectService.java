@@ -7,8 +7,13 @@ import me.kripanshu.backend.dto.ProjectResponse;
 import me.kripanshu.backend.dto.UpdateProjectRequest;
 import me.kripanshu.backend.entity.Project;
 import me.kripanshu.backend.exception.DuplicateResourceException;
+import me.kripanshu.backend.exception.ResourceInUseException;
 import me.kripanshu.backend.exception.ResourceNotFoundException;
+import me.kripanshu.backend.repository.BaselineRepository;
+import me.kripanshu.backend.repository.EndPointRepository;
 import me.kripanshu.backend.repository.ProjectRepository;
+import me.kripanshu.backend.repository.TestRunRepository;
+import me.kripanshu.backend.repository.TestSuiteRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +28,10 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final TestSuiteService testSuiteService;
+    private final EndPointRepository endPointRepository;
+    private final BaselineRepository baselineRepository;
+    private final TestSuiteRepository testSuiteRepository;
+    private final TestRunRepository testRunRepository;
 
     public ProjectResponse createProject(@NotNull CreateProjectRequest request) {
         if (projectRepository.existsByName(request.name())) {
@@ -93,8 +102,19 @@ public class ProjectService {
         if (!projectRepository.existsById(id)) {
             throw new ResourceNotFoundException("Project", id);
         }
+
+        if (testRunRepository.existsBySuiteProjectId(id)) {
+            throw new ResourceInUseException(
+                    "Project '" + id + "' cannot be deleted while test runs exist; run history is retained");
+        }
+
+        endPointRepository.findByProjectId(id).forEach(endpoint -> {
+            baselineRepository.deleteByEndpointId(endpoint.getId());
+            endPointRepository.delete(endpoint);
+        });
+        testSuiteRepository.deleteByProjectId(id);
         projectRepository.deleteById(id);
-        log.info("Deleted project: id={}", id);
+        log.info("Deleting project: id={}", id);
     }
 
     private ProjectResponse toResponse(Project project) {

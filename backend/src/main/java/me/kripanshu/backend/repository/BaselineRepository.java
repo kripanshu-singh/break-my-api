@@ -8,4 +8,5 @@ import me.kripanshu.backend.entity.Baseline;
 
 public interface BaselineRepository extends JpaRepository<Baseline, String> {
     Optional<Baseline> findByEndpointId(String endpointId);
+    void deleteByEndpointId(String endpointId);
 }

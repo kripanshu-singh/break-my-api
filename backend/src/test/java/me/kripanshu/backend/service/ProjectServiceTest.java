@@ -6,6 +6,10 @@ import me.kripanshu.backend.dto.UpdateProjectRequest;
 import me.kripanshu.backend.entity.Project;
 import me.kripanshu.backend.exception.DuplicateResourceException;
 import me.kripanshu.backend.repository.ProjectRepository;
+import me.kripanshu.backend.repository.BaselineRepository;
+import me.kripanshu.backend.repository.EndPointRepository;
+import me.kripanshu.backend.repository.TestRunRepository;
+import me.kripanshu.backend.repository.TestSuiteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,12 +30,21 @@ class ProjectServiceTest {
     private ProjectRepository projectRepository;
     @Mock
     private TestSuiteService testSuiteService;
+    @Mock
+    private EndPointRepository endPointRepository;
+    @Mock
+    private BaselineRepository baselineRepository;
+    @Mock
+    private TestSuiteRepository testSuiteRepository;
+    @Mock
+    private TestRunRepository testRunRepository;
 
     private ProjectService service;
 
     @BeforeEach
     void setUp() {
-        service = new ProjectService(projectRepository, testSuiteService);
+        service = new ProjectService(projectRepository, testSuiteService, endPointRepository,
+                baselineRepository, testSuiteRepository, testRunRepository);
     }
 
     @Test
